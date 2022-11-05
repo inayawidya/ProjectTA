@@ -112,14 +112,18 @@ public class RoundRobinTaskSceduling {
 			@SuppressWarnings("not used")
 			Datacenter datacenter0 = createDatacenter("Datacenter_0");
 			Datacenter datacenter1 = createDatacenter("Datacenter_1");
+			Datacenter datacenter2 = createDatacenter("Datacenter_2");
+			Datacenter datacenter3 = createDatacenter("Datacenter_3");
+			Datacenter datacenter4 = createDatacenter("Datacenter_4");
+			Datacenter datacenter5 = createDatacenter("Datacenter_5");
 
 			//Third step: Create Broker
 			DatacenterBroker broker = createBroker();
 			int brokerId = broker.getId();
 
 			//Fourth step: Create VMs and Cloudlets and send them to broker
-			vmlist = createVM(brokerId,10); //creating 10 vms
-			cloudletList = createCloudlet(brokerId,40); // creating 40 cloudlets
+			vmlist = createVM(brokerId,3); //creating 10 vms
+			cloudletList = createCloudlet(brokerId,100); // creating 40 cloudlets
 
 			broker.submitVmList(vmlist);
 			broker.submitCloudletList(cloudletList);

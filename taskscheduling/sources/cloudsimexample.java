@@ -102,7 +102,7 @@ public class cloudsimexample {
 	 * Creates main() to run this example
 	 */
 	public static void main(String[] args) {
-		Log.printLine("Starting CloudSimExample6...");
+		Log.printLine("Starting cloudsimexample...");
 
 		try {
 			// First step: Initialize the CloudSim package. It should be called
@@ -151,7 +151,7 @@ public class cloudsimexample {
 
 			printCloudletList(newList);
 
-			Log.printLine("CloudSimExample6 finished!");
+			Log.printLine("cloudsimexample finished!");
 		}
 		catch (Exception e)
 		{
