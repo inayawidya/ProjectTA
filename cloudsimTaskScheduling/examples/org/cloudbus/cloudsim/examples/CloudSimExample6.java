@@ -154,7 +154,7 @@ public class CloudSimExample6 {
 
 			//Fourth step: Create VMs and Cloudlets and send them to broker
 			vmlist = createVM(brokerId,3); //creating 20 vms
-			cloudletList = createCloudlet(brokerId,10); // creating 40 cloudlets
+			cloudletList = createCloudlet(brokerId,1000); // creating 40 cloudlets
 
 			broker.submitVmList(vmlist);
 			broker.submitCloudletList(cloudletList);
