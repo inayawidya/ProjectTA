@@ -404,8 +404,14 @@ public class CloudsimExample {
 	    Log.printLine("Total Scheduling Length: " + scheduling_length);
 	    
 	    //Resource Utilization
-	    double resource_utilization = totalTime / (makespan_total * size);
+	    double resource_utilization = 100 * totalTime / (makespan_total * 54);  //0.29
+	    //double resource_utilization =  makespan_total / (totalTime * 54); //0.727
+	    //double resource_utilization = 100 * ExecTime / (totalTime * 54); //0.0711
 	    Log.printLine("Resouce Utilization: " + resource_utilization);
+	    
+//	    double utilization = 100 * totalActualTime/(totalDoneTime*totalVMs);
+//		Log.formatLine("Utilization = [ %f / ( %f * %d)] * 100 = %f", 
+//							totalActualTime, totalDoneTime, totalVMs, utilization);
 	 
 	    //Energy Consumption
 	    Log.printLine(String.format("Total Energy Consumption: %.2f kWh",
