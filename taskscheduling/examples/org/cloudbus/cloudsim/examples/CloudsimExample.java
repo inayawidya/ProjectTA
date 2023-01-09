@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.examples;
 
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -75,13 +76,37 @@ public class CloudsimExample {
 		return list;
 	}
 
+	private static ArrayList<Integer> getSeedValue(int cloudletcount){
+		ArrayList<Integer> seed = new ArrayList<Integer>();
+		Log.printLine(System.getProperty("user.dir")+ "/RandomDataset");
+		
+		try{
+			File fobj = new File(System.getProperty("user.dir")+ "/RandomDataset");
+			java.util.Scanner readFile = new java.util.Scanner(fobj);
+			
+			while(readFile.hasNextLine() && cloudletcount>0)
+			{
+				seed.add(readFile.nextInt());
+				cloudletcount--;
+			}
+			readFile.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		return seed;
+	}
 
 	private static List<Cloudlet> createCloudlet(int userId, int cloudlets){
+		
+		ArrayList<Integer> randomSeed = getSeedValue(cloudlets);
+		
 		// Creates a container to store Cloudlets
 		LinkedList<Cloudlet> list = new LinkedList<Cloudlet>();
 
 		//cloudlet parameters
-		long length = 20000;
+		long length = 1000;
 		long fileSize = 300;
 		long outputSize = 300;
 		int pesNumber = 1;
@@ -90,8 +115,9 @@ public class CloudsimExample {
 		Cloudlet[] cloudlet = new Cloudlet[cloudlets];
 
 		for(int i=0;i<cloudlets;i++){
-			Random r = new Random();
-			cloudlet[i] = new Cloudlet(i, (length + r.nextInt(20000)), pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
+			long finalLen = length + randomSeed.get(i);
+			
+			cloudlet[i] = new Cloudlet(i, finalLen, pesNumber, fileSize, outputSize, utilizationModel, utilizationModel, utilizationModel);
 			
 			// setting the owner of these Cloudlets
 			cloudlet[i].setUserId(userId);
@@ -141,7 +167,7 @@ public class CloudsimExample {
 
 			//Fourth step: Create VMs and Cloudlets and send them to broker
 			vmlist = createVM(brokerId,54); //creating vms
-			cloudletList = createCloudlet(brokerId,1000); // creating cloudlets
+			cloudletList = createCloudlet(brokerId,10000); // creating cloudlets
 
 			broker.submitVmList(vmlist);
 			broker.submitCloudletList(cloudletList);
@@ -321,7 +347,7 @@ public class CloudsimExample {
 	        	Log.print("SUCCESS");
 	            CPUTimeSum  = CPUTimeSum  + cloudlet.getActualCPUTime();
 	            waitTimeSum = waitTimeSum + cloudlet.getWaitingTime();
-	            Log.printLine(indent + indent + indent + cloudlet.getResourceId() + indent + indent + indent + cloudlet.getVmId() +
+	            Log.printLine(indent + indent + indent + (cloudlet.getResourceId()-1) + indent + indent + indent + cloudlet.getVmId() +
 	                 indent + indent + dft.format(cloudlet.getActualCPUTime()) + indent + indent + dft.format(cloudlet.getExecStartTime())+
 	                 indent + indent + dft.format(cloudlet.getFinishTime())+ indent + indent + indent + dft.format(cloudlet.getWaitingTime()));
 	            totalValues++; 
@@ -392,7 +418,7 @@ public class CloudsimExample {
 		
 		//Makespan
 		double makespan =0.0;
-		double makespan_total = makespan + cloudlet.getActualCPUTime();
+		double makespan_total = makespan + cloudlet.getFinishTime();
 		System.out.println("Makespan: " + makespan_total);
 		
 		//Imbalance Degree
@@ -403,15 +429,13 @@ public class CloudsimExample {
 	    double scheduling_length = waitTimeSum + makespan_total;
 	    Log.printLine("Total Scheduling Length: " + scheduling_length);
 	    
-	    //Resource Utilization
-	    double resource_utilization = 100 * totalTime / (makespan_total * 54);  //0.29
-	    //double resource_utilization =  makespan_total / (totalTime * 54); //0.727
-	    //double resource_utilization = 100 * ExecTime / (totalTime * 54); //0.0711
+	    //CPU Resource Utilization
+	    double totalTimeRU = 0.0;
+	    for (int i = 0; i < size; i++) {
+			totalTimeRU = cloudletList.get(i).getActualCPUTime();	
+		}
+	    double resource_utilization = (CPUTimeSum / (makespan_total * 54)) * 100;
 	    Log.printLine("Resouce Utilization: " + resource_utilization);
-	    
-//	    double utilization = 100 * totalActualTime/(totalDoneTime*totalVMs);
-//		Log.formatLine("Utilization = [ %f / ( %f * %d)] * 100 = %f", 
-//							totalActualTime, totalDoneTime, totalVMs, utilization);
 	 
 	    //Energy Consumption
 	    Log.printLine(String.format("Total Energy Consumption: %.2f kWh",
